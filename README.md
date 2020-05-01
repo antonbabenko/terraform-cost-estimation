@@ -4,7 +4,7 @@ This repository describes usage of a free cost estimation service which is part 
 
 Join the mailing list on [modules.tf](https://modules.tf) to stay updated!
 
-### tldr; Post your Terraform json file (state or plan-file) and get cost estimation:
+## tldr; Post your Terraform json file (state or plan-file) and get cost estimation:
 
 ```
 $ terraform state pull | curl -s -X POST -H "Content-Type: application/json" -d @- https://cost.modules.tf/
