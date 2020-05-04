@@ -14,13 +14,6 @@ $ terraform state pull | curl -s -X POST -H "Content-Type: application/json" -d 
 
 Currently only `aws_instance` resources are supported. We will support much more in the near future.
 
-## Things you should know about infrastructure costs:
-
-- [x] How much does my infrastructure is going to cost **before**  create?
-- [x] How much does my infrastructure cost **after** it is created (based on Terraform state)?
-- [x] What is the **difference in the price** comparing to the current infrastructure (based on Terraform plan)?
-- [x] Can I have cost estimation based on Terraform 0.7 state files? Yes, any version of Terraform state files is supported!
-
 ## Secrets and sensitive information
 
 As you probably know, **Terraform state and plan files may contain secrets and sensitive information** which you don't want to send anywhere to get cost estimates. There is a solution that is supported, secure, and easy to put in your continuous automation process.
@@ -44,6 +37,14 @@ $ terraform state pull | jq -cf terraform.jq | curl -s -X POST -H "Content-Type:
 ```
 
 Sweet, isn't it?
+
+
+## Things you should know about infrastructure costs:
+
+- [x] How much does my infrastructure is going to cost **before**  create?
+- [x] How much does my infrastructure cost **after** it is created (based on Terraform state)?
+- [x] What is the **difference in the price** comparing to the current infrastructure (based on Terraform plan)?
+- [x] Can I have cost estimation based on Terraform 0.7 state files? Yes, any version of Terraform state files is supported!
 
 
 ## Example - Get cost estimates during `terraform plan`
