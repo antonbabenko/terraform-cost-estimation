@@ -1,6 +1,6 @@
 #  Anonymized, secure and free Terraform Cost Estimation
 
-This repository describes the usage of a free cost estimation service, which is part of [modules.tf](https://modules.tf) that is currently in active development.
+`cost.modules.tf` is entirely free cost estimation service, which is part of [modules.tf](https://modules.tf) that is currently in active development.
 
 Join the mailing list on [modules.tf](https://modules.tf) to stay updated!
 
@@ -11,6 +11,8 @@ $ terraform state pull | curl -s -X POST -H "Content-Type: application/json" -d 
 
 {"hourly": "0.01", "monthly": "9.07"}
 ```
+
+Currently only `aws_instance` resources are supported. We will support much more in the near future.
 
 ## Things you should know about infrastructure costs:
 
