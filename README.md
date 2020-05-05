@@ -12,7 +12,10 @@ $ terraform state pull | curl -s -X POST -H "Content-Type: application/json" -d 
 {"hourly": "0.01", "monthly": "9.07"}
 ```
 
-Currently only `aws_instance` resources are supported. We will support much more in the near future.
+NB: Cost estimation uses official [AWS pricing data](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/price-changes.html) and does not include estimates for items not specified in Terraform configurations (e.g., usage patterns, amount of API calls, bandwidth, disk I/O, spot prices, AWS discounts, etc.).
+
+See the list of [supported resources](#supported-resources).
+
 
 ## Secrets and sensitive information
 
@@ -92,11 +95,33 @@ $ jq 'if .monthly|tonumber > 10 then "$" else "$$$" end' costs.json
 ```
 
 
-## Is this production-ready?
+## Supported resources
 
-It is production-ready if you are using only `aws_instance` resources. :)
+1. EC2 instances (on-demand) and Autoscaling Groups (Launch Configurations and Launch Templates):
+- [x] aws_instance
+- [ ] aws_autoscaling_group
+- [ ] aws_launch_configuration
+- [ ] aws_launch_template
 
-More resources will be supported in the future.
+1. EC2 Fleets (on-demand)
+- [ ] aws_ec2_fleet
+
+1. EBS Volumes, Snapshots, Snapshot Copies
+- [ ] aws_ebs_volume
+- [ ] aws_ebs_snapshot
+- [ ] aws_ebs_snapshot_copy
+
+1. Elastic Load Balancing (ELB, ALB, NLB)
+- [ ] aws_elb
+- [ ] aws_alb / aws_lb
+
+1. NAT Gateways
+- [ ] aws_nat_gateway
+
+
+Please suggest other resources worth covering by upvoting existing issue or opening new issue.
+
+As [AWS Community Hero](https://aws.amazon.com/developer/community/heroes/anton-babenko/), I work a lot with AWS, but I am equally interested in covering other popular [Terraform Providers](https://www.terraform.io/docs/providers/) with decent pricing API.
 
 
 ## Like this? Please follow me and share it with your network!
@@ -104,7 +129,7 @@ More resources will be supported in the future.
 [![@antonbabenko](https://img.shields.io/twitter/follow/antonbabenko.svg?style=flat&label=Follow%20@antonbabenko%20on%20Twitter)](https://twitter.com/antonbabenko)
 [![@antonbabenko](https://img.shields.io/github/followers/antonbabenko?style=flat&label=Follow%20@antonbabenko%20on%20Github)](https://github.com/antonbabenko)
 
-Consider support my work on [GitHub Sponsors](https://github.com/sponsors/antonbabenko), [Buy me a coffee](https://www.buymeacoffee.com/antonbabenko), or [Paypal](https://www.paypal.me/antonbabenko).
+Consider support my work on [GitHub Sponsors](https://github.com/sponsors/antonbabenko), [Buy me a coffee](https://www.buymeacoffee.com/antonbabenko), or [PayPal](https://www.paypal.me/antonbabenko).
 
 
 ## Disclaimer
