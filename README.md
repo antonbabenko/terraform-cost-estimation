@@ -103,19 +103,19 @@ $ jq 'if .monthly|tonumber > 10 then "$" else "$$$" end' costs.json
 - [ ] aws_launch_configuration
 - [ ] aws_launch_template
 
-1. EC2 Fleets (on-demand)
+2. EC2 Fleets (on-demand)
 - [ ] aws_ec2_fleet
 
-1. EBS Volumes, Snapshots, Snapshot Copies
+3. EBS Volumes, Snapshots, Snapshot Copies
 - [ ] aws_ebs_volume
 - [ ] aws_ebs_snapshot
 - [ ] aws_ebs_snapshot_copy
 
-1. Elastic Load Balancing (ELB, ALB, NLB)
+4. Elastic Load Balancing (ELB, ALB, NLB)
 - [ ] aws_elb
 - [ ] aws_alb / aws_lb
 
-1. NAT Gateways
+5. NAT Gateways
 - [ ] aws_nat_gateway
 
 
