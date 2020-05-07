@@ -74,7 +74,10 @@ def extract_data:
 ;
 
 def parse:
-  {keys: [extract_data]}
+  {
+    version: "0.1.0",
+    keys: [extract_data],
+  }
 ;
 
 parse
