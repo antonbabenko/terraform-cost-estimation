@@ -99,24 +99,24 @@ $ jq 'if .monthly|tonumber > 10 then "$" else "$$$" end' costs.json
 
 1. EC2 instances (on-demand) and Autoscaling Groups (Launch Configurations and Launch Templates):
 - [x] aws_instance
-- [ ] aws_autoscaling_group
-- [ ] aws_launch_configuration
-- [ ] aws_launch_template
+- [x] aws_autoscaling_group
+- [x] aws_launch_configuration
+- [x] aws_launch_template
 
 2. EC2 Fleets (on-demand)
-- [ ] aws_ec2_fleet
+- [x] aws_ec2_fleet
 
 3. EBS Volumes, Snapshots, Snapshot Copies
-- [ ] aws_ebs_volume
-- [ ] aws_ebs_snapshot
-- [ ] aws_ebs_snapshot_copy
+- [x] aws_ebs_volume
+- [x] aws_ebs_snapshot
+- [x] aws_ebs_snapshot_copy
 
 4. Elastic Load Balancing (ELB, ALB, NLB)
-- [ ] aws_elb
-- [ ] aws_alb / aws_lb
+- [x] aws_elb
+- [x] aws_alb / aws_lb
 
 5. NAT Gateways
-- [ ] aws_nat_gateway
+- [x] aws_nat_gateway
 
 
 Please suggest other resources worth covering by upvoting existing issue or opening new issue.
