@@ -23,7 +23,17 @@ As you probably know, **Terraform state and plan files may contain secrets and s
 
 All you need to do is to process the Terraform state or plan file with [terraform.jq file](https://github.com/antonbabenko/terraform-cost-estimation/blob/master/terraform.jq) which is available in this repository.
 
-`terraform.jq` creates _anonymized cost keys_ sufficient to perform cost estimation. Nothing more.
+`terraform.jq` creates **anonymized cost keys** sufficient to perform cost estimation.
+ 
+For example, cost keys for a single EC2 instance and an Application Load Balancer in `eu-west-1` region look like this:
+```
+{
+  "keys": [
+    "ec2#eu-west-1#t3.nano#shared#linux",
+    "ec2#eu-west-1#alb"
+  ]
+}
+```
 
 The whole process looks like this:
 
