@@ -14,6 +14,8 @@ $ terraform state pull | curl -s -X POST -H "Content-Type: application/json" -d 
 
 NB: Cost estimation uses official [AWS pricing data](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/price-changes.html) and does not include estimates for items not specified in Terraform configurations (e.g., usage patterns, amount of API calls, bandwidth, disk I/O, spot prices, AWS discounts, etc.).
 
+It is sometimes impossible to extract all information required for cost estimations from the Terraform plan provided, and it is more accurate to get estimates from the Terraform state file after the infrastructure is created.
+
 See the list of [supported resources](#supported-resources).
 
 
@@ -22,6 +24,8 @@ See the list of [supported resources](#supported-resources).
 As you probably know, **Terraform state and plan files may contain secrets and sensitive information** which you don't want to send anywhere to get cost estimates. There is a solution that is supported, secure, and easy to put in your continuous automation process.
 
 All you need to do is to process the Terraform state or plan file with [terraform.jq file](https://github.com/antonbabenko/terraform-cost-estimation/blob/master/terraform.jq) which is available in this repository.
+
+> Make sure that JQ version 1.6 is installed. Many Linux distributions install older version by default, and you need to update it as described in the [official documentation](https://stedolan.github.io/jq/download/).
 
 `terraform.jq` creates **anonymized cost keys** sufficient to perform cost estimation.
  
@@ -38,8 +42,6 @@ For example, cost keys for a single EC2 instance and an Application Load Balance
 The whole process looks like this:
 
 ```
-# Install jq version 1.6 or newer - https://stedolan.github.io/jq/download/
-
 # Download terraform.jq file
 $ curl -sLO https://raw.githubusercontent.com/antonbabenko/terraform-cost-estimation/master/terraform.jq
 
