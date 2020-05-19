@@ -1,8 +1,5 @@
 # Terraform Cost Estimation + Open Policy Agent
 #
-# Date: 19.5.2020
-# Author: Anton Babenko
-#
 # This code snippet supports terraform state for now.
 #
 # Get the whole response:
@@ -20,7 +17,7 @@ response := output {
 
   output := {
     "allowed": max_hourly_cost >= to_number(response_cost.body.hourly),
-  	"hourly": response_cost.body.hourly,
+    "hourly": response_cost.body.hourly,
     "monthly": response_cost.body.monthly,
-	}
+  }
 }
