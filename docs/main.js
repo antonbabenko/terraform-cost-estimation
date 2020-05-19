@@ -79,6 +79,7 @@
     try {
       const response = await fetch('https://cost.modules.tf/', {
         method: 'POST',
+        mode: 'cors',
         headers: {
           'Content-Type': 'application/json'
         },
