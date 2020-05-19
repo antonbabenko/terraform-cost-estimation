@@ -1,0 +1,243 @@
+/* reset */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big,
+cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd,
+ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details,
+embed,  figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary,
+time, mark, audio, video { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
+input:focus, select:focus, textarea:focus {outline:none}
+table,td,th,tr {border-collapse:collapse; border-spacing:0;}
+html, body{width:100%; height:100%;}
+input, select, textarea,button {font-family: 'Open Sans', arial, sans-serif; font-weight:400; box-sizing: border-box; color: #000;}
+button,input[type="button"]{cursor: pointer}
+
+.clear{clear:both; font-size:0;}
+.clearfix::after{clear: both; content: "";	display: table;}
+
+
+
+/* custom-file-input */
+
+.js .inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.inputfile + label {
+  max-width: 80%;
+  font-size: 16px;
+  /* 20px */
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.625rem 1.25rem;
+  /* 10px 20px */
+}
+
+.no-js .inputfile + label {
+  display: none;
+}
+
+.inputfile + label * {
+  /* pointer-events: none; */
+  /* in case of FastClick lib use */
+}
+
+.inputfile + label svg {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  fill: currentColor;
+  margin-top: -0.25em;
+  /* 4px */
+  margin-right: 0.25em;
+  /* 4px */
+}
+
+/* style 2 */
+
+.inputfile-2 + label {
+  color: #d3394c;
+  border: 1px solid #e6e6e6;
+  border-radius: 13px;
+}
+
+.inputfile-2:focus + label,
+.inputfile-2.has-focus + label,
+.inputfile-2 + label:hover {
+  color: #722040;
+}
+
+
+
+
+
+
+/*Main Styles*/
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background: #e6e6e6;
+  font-size: 16px;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 400;
+  padding-top: 50px;
+}
+
+.page-wrap {
+  max-width: 920px;
+  min-width: 320px;
+  width: 100%;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 55px 55px 20px;
+}
+/*End Main Styles*/
+
+/*<<Title & Subtitle>>*/
+.page-wrap .main-title,
+.page-wrap .main-subtitle {
+  text-align: center;
+  color: #333333;
+}
+
+.page-wrap .main-title {
+  font-weight: 900;
+  font-size: 39px;
+  line-height: 1.2;
+  padding-bottom: 5px;
+}
+.page-wrap .main-subtitle {
+  font-size: 18px;
+  font-weight: 700;
+}
+/*End <<Title & Subtitle>>*/
+
+/*<<Form>> block*/
+.form-wrap {
+  padding: 55px 0;
+}
+.form-wrap .form {
+
+}
+
+.form-wrap .custom-file-input {
+
+}
+.form-wrap .custom-file-input .tips {
+  display: block;
+  font-size: 12px;
+  padding: 0 5px 20px;
+}
+.form-wrap .custom-file-input .tips li > span {
+  font-weight: bold;
+}
+.form-wrap .textarea-wrap {
+  position: relative;
+  width: 100%;
+  border: 1px solid #e6e6e6;
+  border-radius: 13px;
+  padding: 10px 30px 9px 22px;
+}
+.form-wrap .textarea-wrap .textarea-label {
+  font-weight: 600;
+  font-size: 10px;
+  color: #393939;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.form-wrap .textarea-wrap .textarea {
+  outline: none;
+  border: none;
+  overflow: auto;
+  resize: vertical;
+
+  display: block;
+  width: 100%;
+  background: transparent;
+  font-weight: 400;
+  font-size: 15px;
+  color: #555555;
+  line-height: 1.2;
+
+  min-height: 250px;
+  padding-top: 9px;
+  padding-bottom: 13px;
+}
+.form-wrap .textarea-wrap .error {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 10px;
+  font-size: 14px;
+  color: red;
+  font-weight: 500;
+}
+.button-wrap {
+  margin-top: 50px;
+}
+.button-wrap .button {
+  border: none;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  width: 100%;
+  height: 50px;
+  background-color: #333333;
+  border-radius: 25px;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 16px;
+  font-family: inherit;
+  transition: background-color 0.4s;
+}
+.button-wrap .button:focus {
+  outline: none;
+}
+.button-wrap .button:hover {
+  background-color: #00ad5f;
+}
+.button-wrap .button.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.form-wrap .result {
+  padding-top: 20px;
+}
+.form-wrap .result .result-item,
+.form-wrap .result .result-error {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+}
+.form-wrap .result .result-error {
+  color: red;
+  text-align: center;
+}
+/*End <<Form>> block*/
+
+/*<<Follow me>> block*/
+.follow-me-block {
+  border-top: 1px solid #000000;
+  padding-top: 10px;
+  font-size: 13px;
+  text-align: center;
+}
+.follow-me-block .title {
+  margin-bottom: 5px;
+}
+/*End <<Follow me>> block*/

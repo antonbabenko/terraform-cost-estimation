@@ -1,28 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
     <meta charset="UTF-8">
-    <title>Terraform Cost Estimation</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta type="description" content="Anonymized, secure, and free Terraform cost estimation based on Terraform plan (0.12+) or Terraform state (any version)">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <meta property="og:title" content="Terraform Cost Estimation">
+    <meta property="og:description" content="Anonymized, secure, and free Terraform cost estimation based on Terraform plan (0.12+) or Terraform state (any version)">
+    <meta property="og:image" content="https://github.com/antonbabenko/terraform-cost-estimation/raw/master/assets/terraform-cost-estimation.png">
+    <meta property="og:url" content="https://www.terraform-cost-estimation.com">
+    <title>Terraform Cost Estimation</title>
+    <script>
+        (function (e, t, n) {
+            const r = e.querySelectorAll("html")[0];
+            r.className = r.className.replace(/(^|\s)no-js(\s|$)/, "$1js$2")
+        })(document, window, 0);
+    </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-167142476-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-167142476-1');
+    </script>
 </head>
 <body>
-
-<h1>Terraform Cost Estimation</h1>
-
-<p>Check [terraform-cost-estimation repository](https://github.com/antonbabenko/terraform-cost-estimation) for more information.
-
-<p>More information will be added here soon.
-
-<!-- h2>Supported file formats: Terraform plan and state</h2 -->
-
-<hr>
-
-<h4>Like this project? Please follow me and share it with your network!</h4>
-
-<a href="https://twitter.com/antonbabenko" target="_blank"><img src="https://img.shields.io/twitter/follow/antonbabenko.svg?style=flat&label=Follow%20@antonbabenko%20on%20Twitter"></a>
-<a href="https://github.com/antonbabenko" target="_blank"><img src="https://img.shields.io/github/followers/antonbabenko?style=flat&label=Follow%20@antonbabenko%20on%20Github"></a>
-
-<p>Consider support my work on <a href="https://github.com/sponsors/antonbabenko" target="_blank">GitHub Sponsors</a>, <a href="https://www.buymeacoffee.com/antonbabenko" target="_blank">Buy me a coffee</a>, or <a href="https://www.paypal.me/antonbabenko">PayPal</a>.
-
+<div class="page-wrap">
+    <h1 class="main-title">Terraform Cost Estimation</h1>
+    <h2 class="main-subtitle">from Terraform plan and Terraform state.</h2>
+    <div class="form-wrap">
+        <form class="form">
+            <div class="custom-file-input">
+                <input
+                        accept="application/json, .json, .tfstate, .tfstate.backup"
+                        type="file"
+                        name="file-to-load"
+                        id="file-selector"
+                        class="inputfile inputfile-2"
+                />
+                <label for="file-selector">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+                        <path
+                                d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8
+                  2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6
+                  0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+                        />
+                    </svg>
+                    <span>Choose a file (json, tfstate) ...</span>
+                </label>
+                <span class="tips">
+              Supported formats:
+              <li>Terraform plan as JSON (eg, plan.json): <span>terraform plan -out=plan.tfplan && terraform show -json plan.tfplan > plan.json</span></li>
+              <li>Terraform state (eg, terraform.tfstate): <span>terraform state pull > state.json</span></li>
+            </span>
+            </div>
+            <div class="textarea-wrap">
+                <span class="textarea-label">JSON Payload</span>
+                <textarea
+                        class="textarea"
+                        placeholder="Choose a file above or enter JSON content here"
+                        name="payload"
+                        id="payload"
+                ></textarea>
+                <span class="error" id="request-error-selector"></span>
+            </div>
+            <div class="button-wrap">
+                <button class="button" type="submit" id="estimate-button">
+                    Estimate
+                </button>
+            </div>
+        </form>
+        <div class="result">
+            <span id="estimated-costs" class="result-item"></span>
+            <span id="estimates-costs-diff" class="result-item"></span>
+            <span id="main-error" class="result-error"></span>
+        </div>
+    </div>
+    <div class="follow-me-block">
+        <h4 class="title">See <a href="https://github.com/antonbabenko/terraform-cost-estimation" target="_blank">github.com/antonbabenko/terraform-cost-estimation</a> for all details about features and supported resources!</h4>
+        <h4 class="title">Like this project? Please follow <a href="https://twitter.com/antonbabenko">@antonbabenko</a> and share this project with your network!</h4>
+        <a href="https://twitter.com/antonbabenko" target="_blank"><img
+                src="https://img.shields.io/twitter/follow/antonbabenko.svg?style=flat&label=Follow%20@antonbabenko%20on%20Twitter"></a>
+        <a href="https://github.com/antonbabenko" target="_blank"><img
+                src="https://img.shields.io/github/followers/antonbabenko?style=flat&label=Follow%20@antonbabenko%20on%20Github"></a>
+        <p>Consider support my work on <a href="https://github.com/sponsors/antonbabenko" target="_blank">GitHub
+            Sponsors</a>,
+            <a href="https://www.buymeacoffee.com/antonbabenko" target="_blank">Buy me a coffee</a>, or <a
+                    href="https://www.paypal.me/antonbabenko">PayPal</a>.
+    </div>
+</div>
+<script src="main.js"></script>
 </body>
 </html>
