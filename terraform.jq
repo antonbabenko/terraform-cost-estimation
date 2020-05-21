@@ -227,7 +227,7 @@ def aws:
     def extract_resources:
     XX("extract_resources";
         if .modules then clear_io(shape_resources(tf_lt_12_adapter[]))
-        elif .resources then clear_io(shape_resources(.resources[]))
+        elif .resources then clear_io(shape_resources(.resources[]?))
         else error("Can't read resources")
         end
     );
@@ -550,12 +550,17 @@ def aws:
 
     def process:
     XX("process";
-        if .modules or .resources then
-            extract_resources | process_resources(.attributes; .instances)
-        elif .resource_changes then
-            . | extract_resource_changes | process_resource_changes
-        else error("Unknown json file structure")
-        end
+        try
+            if .modules or .resources then
+                extract_resources | process_resources(.attributes; .instances)
+            elif .resource_changes then
+                . | extract_resource_changes | process_resource_changes
+            else error("- Unknown tfstate/plan json file structure")
+            end
+        catch if test("^[⭣-]")
+              then error(.)
+              else error("Json input isn't an object")
+              end
     );
 
     XX("aws";
@@ -577,19 +582,19 @@ def AWS:
     }
 ;
 
-def meta:
-    {terraform_version, format_version}
-;
+def meta: {
+    terraform_version,
+    format_version,
+    version
+};
 
-def version: "0.2.2";
+def version: "0.2.3";
 
-def parse:
-  {
+def parse: {
     version: version,
     meta: meta,
     keys: aws.cost.keys,
-  }
-;
+};
 
 
 empty
