@@ -52,21 +52,16 @@
     return true
   }
 
-  const generateResultText = (hourly, monthly, title = 'Estimated costs') => {
-    return `${title}: USD ${hourly} per hour, or USD ${monthly} per month`
-  }
-
   const setDataIntoTag = (data) => {
-    const isHaveHourlyAndMonthlyField = data.hasOwnProperty('hourly') && data.hasOwnProperty('monthly')
+    const hasHourlyAndMonthlyField = data.hasOwnProperty('hourly') && data.hasOwnProperty('monthly')
 
-    const isHaveDiffHourlyAndMonthlyField =
+    const hasDiffHourlyAndMonthlyField =
       data.hasOwnProperty('diff_hourly') && data.hasOwnProperty('diff_monthly')
 
-    if (isHaveHourlyAndMonthlyField) {
-      estimatedCostsSelector.innerHTML = generateResultText(data.hourly, data.monthly)
-    } else if (isHaveDiffHourlyAndMonthlyField) {
-      estimatedCostsDiffSelector.innerHTML =
-        generateResultText(data.diff_hourly, data.diff_monthly, 'Estimated cost difference')
+    if (hasDiffHourlyAndMonthlyField) {
+      estimatedCostsDiffSelector.innerHTML = `Estimated cost difference: USD ${data.diff_hourly} per hour, or USD ${data.diff_monthly} per month.<br /><br />Total estimated costs:  USD ${data.hourly} per hour, or USD ${data.monthly} per month.`
+    } else if (hasHourlyAndMonthlyField) {
+      estimatedCostsSelector.innerHTML = `Estimated costs: USD ${data.hourly} per hour, or USD ${data.monthly} per month.`
     }
   }
 
@@ -120,7 +115,7 @@
         } else {
           fileSelector.value = ''
           payloadSelector.value = ''
-          fileLabel.querySelector( 'span' ).innerHTML = 'Choose a file...'
+          fileLabel.querySelector( 'span' ).innerHTML = 'Choose a file (json, tfstate) ...'
           textAreaErrorSelector.innerHTML = ''
           setDataIntoTag(data)
         }
