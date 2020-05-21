@@ -25,6 +25,7 @@ def del_idles_recursive:
 def getpaths(PATHS): . as $in | reduce PATHS[] as $p ({}; .[$p[0]] = ($in | getpath($p)));
 def uniq: reduce .[] as $x ([]; if . | contains([$x]) | not then . + [$x] else . end);
 def insideof($g): . as $i| $g | map(.==$i) | any;
+def valid(exp): exp | if . == null then empty else . end;
 def mul: reduce .[] as $x(1; .*$x);
 def array_mul_tail: [.[0],(.[1:]|mul)];
 def array_group_sum:
@@ -35,14 +36,20 @@ def compact_cost_keys:
     sort_by(.[0]) | array_group_sum | pack_cost_keys
 ;
 
-
-def vars:
-    {
-        platform: "linux",
-        ec2_prefix: "ec2",
-        fallback_region: ($ENV.AWS_DEFAULT_REGION // $ENV.AWS_REGION // "eu-west-1")
-    }
+# Scoping wraper
+# - Wraps an expression to the try..catch sentence
+#   and prepends error orriginal error with a mesage prefix.
+def XX(msg; exp):
+    try exp catch if test("->")
+                  then error("\n⭣  \(msg)\(.)")
+                  else error("\n ↘ \(msg) -> \(.)") end
 ;
+
+def vars: {
+    platform: "linux",
+    ec2_prefix: "ec2",
+    fallback_region: ($ENV.AWS_DEFAULT_REGION // $ENV.AWS_REGION // "eu-west-1")
+};
 
 def group_resources:
     group_by(.)[]|[.[0], (.|length)] | join("|")
@@ -133,20 +140,29 @@ def aws:
                 + "Same level keys: \($t)")
         end
     ;
+
     ################################################################# Adapters
     def tf_lt_12_adapter:
+    XX("tf_lt_12_adapter";
         [   .modules[].resources
-            |to_entries[]
-            |{  name: .key,
+            | if . == null then empty else . end
+            | to_entries
+            | .[]
+            | { name: .key,
                 type: .value.type,
                 instances:[.value.primary + {dependencies:.value.depends_on}]
-            }]
-    ;
+            }
+        ]
+    );
+
     ################################################################# Data shapers
     def clear_io(expr):
+    XX("clear_io";
         del_idles_recursive | [expr | del_idles_recursive]
-    ;
+    );
+
     def shape_attributes:
+    XX("shape_attributes";
         {
             id, arn, instance_type,
             # Autoscaling groups specific
@@ -181,8 +197,10 @@ def aws:
             size,
             source_region,
         }
-    ;
+    );
+
     def shape_resources(root):
+    XX("shape_resources";
         root |
         {   #"module", mode, each, name,
             type, provider,
@@ -191,8 +209,10 @@ def aws:
                 #dependencies,
             }]
         }
-    ;
+    );
+
     def shape_resource_changes(root):
+    XX("shape_resource_changes";
         root |
         {   "module", mode, each, name, address,
             type, provider_name,
@@ -201,19 +221,24 @@ def aws:
                 after: .after | shape_attributes
             },
         }
-    ;
+    );
+
     ################################################################# Data extractors
     def extract_resources:
+    XX("extract_resources";
         if .modules then clear_io(shape_resources(tf_lt_12_adapter[]))
         elif .resources then clear_io(shape_resources(.resources[]))
         else error("Can't read resources")
         end
-    ;
+    );
+
     def extract_resource_changes:
+    XX("extract_resource_changes";
         if .resource_changes then clear_io(shape_resource_changes(.resource_changes[]))
         else error("Can't read resource_changes")
         end
-    ;
+    );
+
     def aws_ebs_block_devices(attr; inst):
         def extract(cond; cost_type):
             vars as $v |
@@ -231,6 +256,7 @@ def aws:
                     source_region: (.source_region // $v.fallback_region),
                 }
         ;
+    XX("aws_ebs_block_devices";
         [(
             extract(.type == "aws_ebs_snapshot"; "snapshot"),
             extract(.type == "aws_ebs_snapshot_copy"; "snapshot"),
@@ -255,10 +281,13 @@ def aws:
                 end
             )
         ]
-    ;
+    );
+
     def aws_ec2_fleet(attr; inst):
+    XX("aws_ec2_fleet";
         [   map(select(.type == "aws_ec2_fleet" and inst))[] // {}
             | (inst // {})
+            | if (type | . == "object") then [.] else . end # hack for plans
             | map(attr)[] // {}
             | select(   # Common filtration on instances level
                 .target_capacity_specification[]?
@@ -275,85 +304,119 @@ def aws:
             | {launch_template_id, capacity: $capacities | add}
             #| {(.launch_template_id): .capacity}
             | [.launch_template_id, .capacity]
+            | select(.[0] != null)
         ] | group_and_sum
-    ;
+    );
+
     def aws_instance(attr; inst):
+    XX("aws_instance";
         [   map(select(.type == "aws_instance" and inst))[] // empty
             | inst // {}
             | if (type| . == "object") then [.] else . end # hack for plans
         ] | add // []
         | map(attr)
-    ;
+        | map(if . == null then empty else . end)
+    );
+
     def aws_autoscaling_group(inst):
+    XX("aws_autoscaling_group";
         #select(contains({type: "aws_autoscaling_group"}))
         map(select(.type == "aws_autoscaling_group" and inst))
-    ;
+    );
+
     def ag_filter(attr):
+    XX("ag_filter";
         # Filtration of autoscaling groups that doesn't fit.
         map(select(
             attr.desired_capacity>=1
             or attr.min_size>=1
             or attr.spot_price
         ))
-    ;
+    );
+
     def ag_instances(attr; inst):
+    XX("ag_instances";
         [   .[]
             | inst
             | if (type| . == "object") then [.] else . end # hack for plans
         ] | (add // [])
-    ;
+    );
+
     def ag_instances_with_lt(attr):
+    XX("ag_instances_with_lt";
         map(select(attr.launch_template))
-    ;
+    );
+
     def ag_instances_with_lc(attr):
+    XX("ag_instances_with_lc";
         map(select(attr.launch_configuration))
-    ;
+    );
+
     def lt_ids(attr):
+    XX("lt_ids";
         [.[] | attr.launch_template[].id] | uniq
-    ;
+    );
+
     def lc_ids(attr):
+    XX("lc_ids";
         [.[] | attr.launch_configuration] | uniq
-    ;
+    );
+
     def desired_capacities(attr; inst):
+    XX("desired_capacities";
         [   .[] | inst
             | if (type| . == "object") then [.] else . end # hack for plans
             | .[] | attr as $a | $a
             | [.launch_configuration? // (.launch_template? // [] | .[].id)] #as $ids
             | .[] | [., ($a.desired_capacity | if . == 0 then $a.min_size // 0 else . end)]
         ]   | group_and_sum # => {launch_..._id: total_desired_capacity}
-    ;
+    );
+
     def aws_launch_template(inst):
+    XX("aws_launch_template";
         map(select(.type == "aws_launch_template" and inst))
-    ;
+    );
+
     def aws_launch_configuration(inst):
+    XX("aws_launch_configuration";
         map(select(.type == "aws_launch_configuration" and inst))
-    ;
+    );
+
     def launch_instances($ids; attr; inst):
+    XX("launch_instances";
         [[.[] | inst
         | if (type | . == "object") then [.] else . end # hack for plans
         ] | (add // [])[] | select(attr.id|insideof($ids))]
         | map(attr) # Reduce depth
-    ;
+    );
+
     def bind_capacities($caps):
+    XX("bind_capabilities";
         [.[] | . + {capacity: $caps[.id]}]
-    ;
+    );
+
     ################################################################# Compute costs funcs
     def cost_instances:
+    XX("cost_instances";
         map(extract_ec2_cost_info)
-    ;
+    );
+
     def cost_gpus:
+    XX("cost_gpus";
         map(extract_gpu_cost_info)
-    ;
+    );
+
     def aws_loadbalancers(attr; inst):
         def extract(cond; _type):
             vars as $v |
             map(select(cond))[]
-                | inst
+                | valid(inst)
                 | if (type | . == "object") then [.] else . end # hack for plans
                 | .[] | attr
                 | { region: (.arn | parse_arn? // $v.fallback_region),
                     type: _type}
         ;
+    XX("aws_loadbalancers";
         [(
             extract(.type == "aws_lb" or .type == "aws_alb";
                     if .load_balancer_type == "network" then "nlb" else "alb" end),
@@ -361,14 +424,16 @@ def aws:
             extract(.type == "aws_nat_gateway"; "nat")
         ) | ["ec2#\(.region)#\(.type)", 1]]
         #| group_resources
-    ;
+    );
+
     ################################################################# Process data
     def process_resources(attr; inst):
+    XX("process_resources";
         . as $r |
         aws_instance(attr; inst) as $ai |
         aws_autoscaling_group(inst) as $ag |
         ($ag | ag_instances(attr; inst)
-                | ag_filter(attr)) as $agi |
+             | ag_filter(attr)) as $agi |
         ($agi | ag_instances_with_lt(attr)) as $ilt |
         ($agi | ag_instances_with_lc(attr)) as $ilc |
         ($ilt | lt_ids(attr)) as $lti |
@@ -376,13 +441,13 @@ def aws:
         ($ag | desired_capacities(attr; inst)) as $dc |
         (aws_launch_template(inst)) as $lt |
         ($lt | launch_instances($lti; attr; inst)
-                | bind_capacities($dc)) as $lt_ins |
+             | bind_capacities($dc)) as $lt_ins |
         (aws_launch_configuration(inst)) as $lc |
         ($lc | launch_instances($lci; attr; inst)
-                | bind_capacities($dc)) as $lc_ins |
+             | bind_capacities($dc)) as $lc_ins |
         aws_ec2_fleet(attr; inst) as $af |
         ($lt | launch_instances(($af|keys); attr; inst)
-                | bind_capacities($af)) as $af_ins |
+             | bind_capacities($af)) as $af_ins |
         ################################################################ Compute costs
         ($ai | cost_instances) as $cai |
         ($lt_ins | cost_instances) as $clti |
@@ -440,11 +505,13 @@ def aws:
                 keys: $ck | compact_cost_keys,
             },
         }
-    ;
+    );
+
     def process_resource_changes:
+    XX("process_resource_changes";
         . as $r | $r
-        | process_resources(.change.before; .) as $before
-        | process_resources(.change.after; .) as $after
+        | XX("# before"; process_resources(.change.before; .)) as $before
+        | XX("# after"; process_resources(.change.after; .)) as $after
         | {
             #before: $before | del_idles_recursive,
             #after: $after | del_idles_recursive,
@@ -479,16 +546,21 @@ def aws:
                 }
             }
         }
-    ;
+    );
+
     def process:
+    XX("process";
         if .modules or .resources then
             extract_resources | process_resources(.attributes; .instances)
         elif .resource_changes then
             . | extract_resource_changes | process_resource_changes
         else error("Unknown json file structure")
         end
-    ;
-    process
+    );
+
+    XX("aws";
+        process
+    )
 ;
 
 def AWS:
@@ -505,9 +577,16 @@ def AWS:
     }
 ;
 
+def meta:
+    {terraform_version, format_version}
+;
+
+def version: "0.2.2";
+
 def parse:
   {
-    version: "0.2.0",
+    version: version,
+    meta: meta,
     keys: aws.cost.keys,
   }
 ;
