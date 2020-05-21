@@ -4,12 +4,14 @@
 
 Join the mailing list on [modules.tf](https://modules.tf) to stay updated!
 
+This is not an official HashiCorp product.
+
 ## tldr; Post your Terraform state or plan-file (as JSON) and get cost estimation:
 
 ```
 $ terraform state pull | curl -s -X POST -H "Content-Type: application/json" -d @- https://cost.modules.tf/
 
-{"hourly": "0.01", "monthly": "9.07"}
+{"hourly": 0.01, "monthly": 9.07}
 ```
 
 NB: Cost estimation uses official [AWS pricing data](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/price-changes.html) and does not include estimates for items not specified in Terraform configurations (e.g., usage patterns, amount of API calls, bandwidth, disk I/O, spot prices, AWS discounts, etc.).
@@ -48,7 +50,7 @@ $ curl -sLO https://raw.githubusercontent.com/antonbabenko/terraform-cost-estima
 # Get terraform state (or plan), extract cost keys, send them to cost estimation service
 $ terraform state pull | jq -cf terraform.jq | curl -s -X POST -H "Content-Type: application/json" -d @- https://cost.modules.tf/
 
-{"hourly": "0.01", "monthly": "9.07"}
+{"hourly": 0.01, "monthly": 9.07}
 ```
 
 Sweet, isn't it?
@@ -150,6 +152,9 @@ Consider support my work on [GitHub Sponsors](https://github.com/sponsors/antonb
 No identifiable customer information used to query pricing systems (check source code of [terraform.jq](https://github.com/antonbabenko/terraform-cost-estimation/blob/master/terraform.jq)).
 
 `terraform-cost-estimation` project managed by [Anton Babenko](https://github.com/antonbabenko).
+
+This is not an official HashiCorp product. You may want to look into [Terraform Cloud](https://www.terraform.io/docs/cloud/) where similar feature exists.
+
 
 ## License
 
