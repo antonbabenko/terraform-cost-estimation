@@ -1,6 +1,6 @@
 {
   "format_version": "0.1",
-  "terraform_version": "0.12.24",
+  "terraform_version": "0.12.25",
   "planned_values": {
     "root_module": {
       "resources": [
@@ -336,7 +336,53 @@
           "provider_name": "aws",
           "schema_version": 0,
           "values": {
-            "block_device_mappings": [],
+            "block_device_mappings": [
+              {
+                "device_name": "xvfs",
+                "ebs": [
+                  {
+                    "delete_on_termination": null,
+                    "encrypted": null,
+                    "kms_key_id": null,
+                    "snapshot_id": null,
+                    "volume_size": 11
+                  }
+                ],
+                "no_device": null,
+                "virtual_name": null
+              },
+              {
+                "device_name": "xvfa",
+                "ebs": [
+                  {
+                    "delete_on_termination": null,
+                    "encrypted": null,
+                    "kms_key_id": null,
+                    "snapshot_id": null,
+                    "volume_size": 21,
+                    "volume_type": "sc1"
+                  }
+                ],
+                "no_device": null,
+                "virtual_name": null
+              },
+              {
+                "device_name": "xvfb",
+                "ebs": [
+                  {
+                    "delete_on_termination": null,
+                    "encrypted": null,
+                    "iops": 2001,
+                    "kms_key_id": null,
+                    "snapshot_id": null,
+                    "volume_size": 31,
+                    "volume_type": "io1"
+                  }
+                ],
+                "no_device": null,
+                "virtual_name": null
+              }
+            ],
             "capacity_reservation_specification": [],
             "cpu_options": [],
             "credit_specification": [],
@@ -1042,7 +1088,53 @@
         ],
         "before": null,
         "after": {
-          "block_device_mappings": [],
+          "block_device_mappings": [
+            {
+              "device_name": "xvfs",
+              "ebs": [
+                {
+                  "delete_on_termination": null,
+                  "encrypted": null,
+                  "kms_key_id": null,
+                  "snapshot_id": null,
+                  "volume_size": 11
+                }
+              ],
+              "no_device": null,
+              "virtual_name": null
+            },
+            {
+              "device_name": "xvfa",
+              "ebs": [
+                {
+                  "delete_on_termination": null,
+                  "encrypted": null,
+                  "kms_key_id": null,
+                  "snapshot_id": null,
+                  "volume_size": 21,
+                  "volume_type": "sc1"
+                }
+              ],
+              "no_device": null,
+              "virtual_name": null
+            },
+            {
+              "device_name": "xvfb",
+              "ebs": [
+                {
+                  "delete_on_termination": null,
+                  "encrypted": null,
+                  "iops": 2001,
+                  "kms_key_id": null,
+                  "snapshot_id": null,
+                  "volume_size": 31,
+                  "volume_type": "io1"
+                }
+              ],
+              "no_device": null,
+              "virtual_name": null
+            }
+          ],
           "capacity_reservation_specification": [],
           "cpu_options": [],
           "credit_specification": [],
@@ -1084,7 +1176,28 @@
         },
         "after_unknown": {
           "arn": true,
-          "block_device_mappings": [],
+          "block_device_mappings": [
+            {
+              "ebs": [
+                {
+                  "iops": true,
+                  "volume_type": true
+                }
+              ]
+            },
+            {
+              "ebs": [
+                {
+                  "iops": true
+                }
+              ]
+            },
+            {
+              "ebs": [
+                {}
+              ]
+            }
+          ],
           "capacity_reservation_specification": [],
           "cpu_options": [],
           "credit_specification": [],
@@ -1187,7 +1300,7 @@
   ],
   "prior_state": {
     "format_version": "0.1",
-    "terraform_version": "0.12.24",
+    "terraform_version": "0.12.25",
     "values": {
       "root_module": {
         "resources": [
@@ -1290,7 +1403,7 @@
               "group_names": [
                 "eu-west-1"
               ],
-              "id": "2020-05-17 13:15:51.632452 +0000 UTC",
+              "id": "2020-05-22 15:37:39.453089 +0000 UTC",
               "names": [
                 "eu-west-1a",
                 "eu-west-1b",
@@ -1313,7 +1426,7 @@
             "schema_version": 0,
             "values": {
               "current": null,
-              "description": "EU (Ireland)",
+              "description": "Europe (Ireland)",
               "endpoint": "ec2.eu-west-1.amazonaws.com",
               "id": "eu-west-1",
               "name": "eu-west-1"
@@ -1720,6 +1833,53 @@
           "name": "lt",
           "provider_config_key": "aws",
           "expressions": {
+            "block_device_mappings": [
+              {
+                "device_name": {
+                  "constant_value": "xvfs"
+                },
+                "ebs": [
+                  {
+                    "volume_size": {
+                      "constant_value": 11
+                    }
+                  }
+                ]
+              },
+              {
+                "device_name": {
+                  "constant_value": "xvfa"
+                },
+                "ebs": [
+                  {
+                    "volume_size": {
+                      "constant_value": 21
+                    },
+                    "volume_type": {
+                      "constant_value": "sc1"
+                    }
+                  }
+                ]
+              },
+              {
+                "device_name": {
+                  "constant_value": "xvfb"
+                },
+                "ebs": [
+                  {
+                    "iops": {
+                      "constant_value": 2001
+                    },
+                    "volume_size": {
+                      "constant_value": 31
+                    },
+                    "volume_type": {
+                      "constant_value": "io1"
+                    }
+                  }
+                ]
+              }
+            ],
             "elastic_gpu_specifications": [
               {
                 "type": {

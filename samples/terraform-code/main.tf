@@ -120,11 +120,11 @@ resource "aws_ec2_fleet" "lt" {
       launch_template_id = aws_launch_template.lt.id
       version            = aws_launch_template.lt.latest_version
     }
-//    // For internal tests
-//    launch_template_specification {
-//      launch_template_id = element(aws_launch_template.lt.*.id, 0)
-//      version            = aws_launch_template.lt[0].latest_version
-//    }
+    //    // For internal tests
+    //    launch_template_specification {
+    //      launch_template_id = element(aws_launch_template.lt.*.id, 0)
+    //      version            = aws_launch_template.lt[0].latest_version
+    //    }
   }
 
   target_capacity_specification {
@@ -147,6 +147,33 @@ resource "aws_launch_template" "lt" {
 
   elastic_inference_accelerator { // this is not part of EC2 pricing
     type = "eia1.medium"
+  }
+
+  block_device_mappings { # "standard", "gp2", "io1", "sc1", or "st1". (Default: "gp2").
+    device_name = "xvfs"
+
+    ebs {
+      volume_size = 11
+    }
+  }
+
+  block_device_mappings { # "standard", "gp2", "io1", "sc1", or "st1". (Default: "gp2").
+    device_name = "xvfa"
+
+    ebs {
+      volume_size = 21
+      volume_type = "sc1"
+    }
+  }
+
+  block_device_mappings { # "standard", "gp2", "io1", "sc1", or "st1". (Default: "gp2").
+    device_name = "xvfb"
+
+    ebs {
+      volume_size = 31
+      volume_type = "io1"
+      iops        = 2001
+    }
   }
 }
 
