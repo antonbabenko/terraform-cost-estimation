@@ -72,7 +72,7 @@
 
   const postData = async (data = {}) => {
     try {
-      const response = await fetch('https://cost.modules.tf/', {
+      const response = await fetch('https://cost.modules.tf/?from=website', {
         method: 'POST',
         mode: 'cors',
         headers: {
