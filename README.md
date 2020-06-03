@@ -158,4 +158,6 @@ This is not an official HashiCorp product. You may want to look into [Terraform 
 
 ## License
 
-MIT licensed. See LICENSE for full details.
+This code is released under the Apache 2.0 License. Please see LICENSE for more details.
+
+Copyright © 2020 Anton Babenko (Betajob AS)
